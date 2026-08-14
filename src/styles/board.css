@@ -1,0 +1,171 @@
+/* ============================ Prize board ================================ */
+
+.board {
+  padding: clamp(12px, 1.4vw, 18px);
+  position: sticky;
+  top: 112px;
+}
+
+.board__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(var(--c-primary-rgb), 0.18);
+}
+
+.board__count {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+}
+
+.board__count strong {
+  color: var(--c-primary);
+  font-size: 1.3rem;
+}
+
+.board__subtitle {
+  font-size: 0.72rem;
+  color: var(--c-muted);
+  line-height: 1.45;
+  margin-top: 8px;
+}
+
+.board__cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 10px;
+  margin-top: 10px;
+}
+
+.board__col {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prize-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    90deg,
+    rgba(var(--c-primary-rgb), 0.12) 0%,
+    rgba(var(--c-primary-rgb), 0.03) 65%,
+    transparent 100%
+  );
+  border: 1px solid rgba(var(--c-primary-rgb), 0.16);
+  font-size: clamp(0.66rem, 0.85vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.45s var(--ease-out);
+  overflow: hidden;
+}
+
+.prize-row__marker {
+  font-size: 0.85em;
+  line-height: 1;
+  min-width: 0;
+}
+
+.prize-row__marker:empty {
+  display: none;
+}
+
+.prize-row__name {
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prize-row__value {
+  font-size: 0.86em;
+  color: var(--c-primary);
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* The strike that sweeps across a prize as it leaves the board. */
+.prize-row__strike {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--c-danger), transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out), opacity 0.3s;
+}
+
+/* Rarity accents keep the top of the board feeling valuable. */
+.prize-row[data-state='live'][data-rarity='legendary'] {
+  background: linear-gradient(90deg, rgba(var(--c-accent-rgb), 0.24), rgba(var(--c-primary-rgb), 0.06) 70%, transparent);
+  border-color: rgba(var(--c-accent-rgb), 0.5);
+  box-shadow: 0 0 18px rgba(var(--c-primary-rgb), calc(0.22 * var(--fx-glow)));
+}
+
+.prize-row[data-state='live'][data-rarity='legendary'] .prize-row__name {
+  color: rgb(var(--c-accent-rgb));
+}
+
+.prize-row[data-state='live'][data-rarity='epic'] {
+  border-color: rgba(var(--c-primary-rgb), 0.38);
+}
+
+.prize-row[data-state='out'] {
+  background: rgba(0, 0, 0, 0.28);
+  border-color: rgba(var(--c-text-rgb), 0.05);
+  color: rgba(var(--c-muted-rgb), 0.45);
+  box-shadow: none;
+  filter: saturate(0.15);
+}
+
+.prize-row[data-state='out'] .prize-row__name,
+.prize-row[data-state='out'] .prize-row__value {
+  color: rgba(var(--c-muted-rgb), 0.42);
+}
+
+.prize-row[data-state='out'] .prize-row__marker {
+  opacity: 0.3;
+}
+
+.prize-row[data-state='out'] .prize-row__strike {
+  transform: scaleX(1);
+  opacity: 0.75;
+}
+
+.prize-row[data-state='out'][data-just-out='true'] {
+  animation: prize-knock 0.6s var(--ease-out);
+}
+
+@keyframes prize-knock {
+  0% { transform: translateX(0) scale(1); background: rgba(var(--c-danger-rgb), 0.35); }
+  25% { transform: translateX(6px) scale(1.02); }
+  60% { transform: translateX(-3px) scale(0.995); }
+  100% { transform: none; }
+}
+
+@media (max-width: 1200px) {
+  .board {
+    position: static;
+  }
+}
+
+@media (max-width: 860px) {
+  .board__cols {
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+  }
+}

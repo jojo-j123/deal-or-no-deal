@@ -1,0 +1,173 @@
+/* ============================ The room ==================================== */
+
+.stage {
+  position: relative;
+  min-height: 100dvh;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.stage__bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.stage__gradient {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-base);
+}
+
+.stage__image {
+  position: absolute;
+  inset: 0;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  opacity: calc(1 - var(--bg-overlay));
+}
+
+/* Two slow drifting lights: the whole room breathes. */
+.stage__spot {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: calc(0.42 * var(--fx-glow));
+  mix-blend-mode: screen;
+}
+
+.stage__spot--a {
+  width: 60vw;
+  height: 46vw;
+  top: -18vw;
+  left: -6vw;
+  background: radial-gradient(circle, rgba(var(--c-primary-rgb), 0.55), transparent 68%);
+  animation: spot-drift-a 26s var(--ease-in-out) infinite alternate;
+}
+
+.stage__spot--b {
+  width: 52vw;
+  height: 42vw;
+  bottom: -16vw;
+  right: -8vw;
+  background: radial-gradient(circle, rgba(var(--c-secondary-rgb), 0.5), transparent 70%);
+  animation: spot-drift-b 34s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes spot-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(14vw, 7vh, 0) scale(1.16); }
+}
+
+@keyframes spot-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to { transform: translate3d(-12vw, -8vh, 0) scale(0.94); }
+}
+
+/* Reflective studio floor. */
+.stage__floor {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -2%;
+  height: 42%;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(var(--c-primary-rgb), 0.07) 46%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--c-text-rgb), 0.045) 0 1px,
+      transparent 1px 78px
+    );
+  transform: perspective(700px) rotateX(62deg);
+  transform-origin: bottom center;
+  opacity: 0.5;
+  mask-image: linear-gradient(180deg, transparent, #000 55%);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 55%);
+}
+
+.stage__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    115% 90% at 50% 42%,
+    transparent 38%,
+    rgba(0, 0, 0, calc(0.85 * var(--fx-vignette))) 100%
+  );
+}
+
+.stage__scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.22) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+.stage__grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.1s steps(4) infinite;
+  pointer-events: none;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-4%, 3%); }
+  50% { transform: translate(3%, -3%); }
+  75% { transform: translate(-2%, -4%); }
+}
+
+.stage__particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.stage__content {
+  position: relative;
+  z-index: 2;
+  min-height: 100dvh;
+}
+
+/* Screen reactions ---------------------------------------------------------*/
+
+.stage.is-shaking .stage__content {
+  animation: stage-shake 0.62s var(--ease-out);
+}
+
+@keyframes stage-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  12% { transform: translate3d(-9px, 4px, 0) rotate(-0.25deg); }
+  28% { transform: translate3d(8px, -5px, 0) rotate(0.22deg); }
+  46% { transform: translate3d(-6px, 3px, 0) rotate(-0.16deg); }
+  64% { transform: translate3d(5px, -2px, 0); }
+  82% { transform: translate3d(-2px, 1px, 0); }
+}
+
+.stage[data-burst='big']::after,
+.stage[data-burst='win']::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%, rgba(var(--c-accent-rgb), 0.6), transparent 62%);
+  animation: burst-flash 1.1s var(--ease-out) forwards;
+}
+
+@keyframes burst-flash {
+  0% { opacity: 0; }
+  16% { opacity: 0.85; }
+  100% { opacity: 0; }
+}

@@ -1,0 +1,462 @@
+/* ==============================  Cases  ==================================
+   A case is a stack of thin layers: aura, interior, lid (handle + face), and a
+   contact shadow. Only the lid moves when the case opens.
+   ========================================================================= */
+
+.case {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.28;
+  perspective: 1000px;
+}
+
+.case__shell {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* ------------------------------------------------------------------- lid */
+
+.case__lid {
+  position: absolute;
+  inset: 0;
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.75s var(--ease-in-out);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* The face. Clipping lives here so the handle can sit outside the case. */
+.case__body {
+  position: absolute;
+  inset: 0;
+  border-radius: clamp(6px, 0.9vw, 12px);
+  background: var(--case-material);
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.55),
+    inset 4px 0 10px rgba(0, 0, 0, 0.26),
+    inset -4px 0 10px rgba(0, 0, 0, 0.26),
+    0 12px 26px rgba(0, 0, 0, 0.55);
+}
+
+/* Brushed metal grain. */
+.case__body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    91deg,
+    rgba(255, 255, 255, 0.05) 0 1px,
+    transparent 1px 5px
+  );
+  opacity: 0.6;
+}
+
+/* Broad light catch across the upper half. */
+.case__body::after {
+  content: '';
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -18%;
+  height: 52%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), transparent 75%);
+  filter: blur(6px);
+}
+
+/* The lid/base split, a couple of pixels of shadow that reads as thickness. */
+.case__seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 21%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.55) 12%,
+    rgba(0, 0, 0, 0.55) 88%,
+    transparent
+  );
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* ---------------------------------------------------------------- number */
+
+.case__plate {
+  position: absolute;
+  inset: 16% 17% 30%;
+  display: grid;
+  place-items: center;
+  border-radius: clamp(3px, 0.5vw, 7px);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.12));
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.case__number {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.2vw, 2.7rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: rgba(26, 28, 33, 0.9);
+  /* Stamped into the plate. */
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6),
+    0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.case[data-variant='hero'] .case__number {
+  font-size: clamp(2.8rem, 8vw, 5.4rem);
+}
+
+/* -------------------------------------------------------------- hardware */
+
+/*
+ * The handle is three bars: a top rail from a hard-stop gradient plus two
+ * posts. No masks, no images, and it silhouettes correctly against any
+ * background because the gap is genuinely empty.
+ */
+.case__handle {
+  position: absolute;
+  top: -11%;
+  left: 50%;
+  width: 30%;
+  height: 12%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    #f2f5f8 0%,
+    #b9c2cc 38%,
+    #7e8794 44%,
+    transparent 45%
+  );
+  border-radius: clamp(4px, 0.7vw, 9px) clamp(4px, 0.7vw, 9px) 0 0;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+}
+
+.case__handle::before,
+.case__handle::after {
+  content: '';
+  position: absolute;
+  top: 38%;
+  bottom: -2%;
+  width: 16%;
+  background: linear-gradient(90deg, #cfd6de, #8a939f 60%, #626b76);
+}
+
+.case__handle::before { left: 4%; }
+.case__handle::after { right: 4%; }
+
+/* Clasps either side of the handle; they spring open with the lid. */
+.case__clasp {
+  position: absolute;
+  top: 4%;
+  width: 11%;
+  height: 9%;
+  border-radius: 2px 2px 3px 3px;
+  background: linear-gradient(180deg, #f4f7fa, #a2abb6 55%, #626b76);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 4px rgba(0, 0, 0, 0.55);
+  transition: transform 0.32s var(--ease-back);
+  z-index: 2;
+}
+
+.case__clasp--l { left: 22%; }
+.case__clasp--r { right: 22%; }
+
+.case__rivet {
+  position: absolute;
+  width: 4.5%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #ffffff, #949da8 55%, #4d545e);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  opacity: 0.85;
+}
+
+.case__rivet--tl { top: 7%; left: 5%; }
+.case__rivet--tr { top: 7%; right: 5%; }
+.case__rivet--bl { bottom: 7%; left: 5%; }
+.case__rivet--br { bottom: 7%; right: 5%; }
+
+/* Specular sweep on hover. */
+.case__sheen {
+  position: absolute;
+  inset: -60% -130%;
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 60%
+  );
+  transform: translateX(-45%) rotate(8deg);
+  opacity: 0;
+  transition: transform 0.9s var(--ease-out), opacity 0.3s;
+}
+
+/* -------------------------------------------------------------- interior */
+
+.case__interior {
+  position: absolute;
+  inset: 0;
+  border-radius: clamp(6px, 0.9vw, 12px);
+  background: linear-gradient(180deg, #101015 0%, #050507 100%);
+  box-shadow: inset 0 12px 26px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* Velvet lining so an open case never looks like an empty div. */
+.case__lining {
+  position: absolute;
+  inset: 6%;
+  border-radius: clamp(4px, 0.6vw, 8px);
+  background:
+    radial-gradient(80% 60% at 50% 24%, rgba(var(--c-primary-rgb), 0.09), transparent 68%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.018) 0 3px, transparent 3px 6px),
+    #08080c;
+  box-shadow:
+    inset 0 3px 14px rgba(0, 0, 0, 0.95),
+    inset 0 0 40px rgba(0, 0, 0, 0.75);
+}
+
+.case__light {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 150%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.15);
+  background: radial-gradient(
+    circle,
+    rgba(255, 252, 240, 0.9) 0%,
+    rgba(var(--c-primary-rgb), 0.5) 26%,
+    transparent 58%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+.case__contents {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  padding: 8%;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(12px) scale(0.86);
+}
+
+/* --------------------------------------------------------- depth effects */
+
+.case__shadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -8%;
+  height: 13%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.75), transparent 70%);
+  filter: blur(6px);
+  transition: transform 0.3s var(--ease-out), opacity 0.3s;
+}
+
+.case__aura {
+  position: absolute;
+  inset: -16%;
+  border-radius: 24%;
+  background: radial-gradient(circle, rgba(var(--case-glow-rgb), 0.6), transparent 64%);
+  opacity: 0;
+  filter: blur(18px);
+  transition: opacity 0.32s var(--ease-out);
+}
+
+/* ---------------------------------------------------------------- states */
+
+.case[data-glow='true'] .case__aura,
+.case[data-state='player'] .case__aura {
+  opacity: calc(0.85 * var(--fx-glow));
+}
+
+.case[data-state='player'] .case__body {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.55),
+    0 0 0 2px rgba(var(--c-primary-rgb), 0.95),
+    0 14px 34px rgba(var(--case-glow-rgb), calc(0.45 * var(--fx-glow)));
+}
+
+.case[data-state='candidate'] .case__aura {
+  opacity: calc(0.9 * var(--fx-glow));
+  animation: case-pulse 1.9s var(--ease-in-out) infinite;
+}
+
+@keyframes case-pulse {
+  0%, 100% { opacity: calc(0.42 * var(--fx-glow)); transform: scale(1); }
+  50% { opacity: calc(0.95 * var(--fx-glow)); transform: scale(1.05); }
+}
+
+.case[data-state='opened'] .case__lid {
+  transform: rotateX(-120deg);
+}
+
+.case[data-state='opened'] .case__contents {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s var(--ease-out) 0.25s, transform 0.5s var(--ease-back) 0.25s;
+}
+
+/* ------------------------------------------------------ opening sequence */
+
+.case[data-variant='hero'] {
+  perspective: 1500px;
+}
+
+.case[data-stage='shake'] .case__shell {
+  animation: case-shake 0.62s var(--ease-in-out);
+}
+
+@keyframes case-shake {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
+  15% { transform: translate3d(-8px, 0, 0) rotate(-1.2deg); }
+  32% { transform: translate3d(8px, 0, 0) rotate(1.2deg); }
+  50% { transform: translate3d(-6px, 0, 0) rotate(-0.8deg); }
+  68% { transform: translate3d(6px, 0, 0) rotate(0.7deg); }
+  85% { transform: translate3d(-2px, 0, 0) rotate(-0.3deg); }
+}
+
+.case[data-stage='unlock'] .case__clasp--l,
+.case[data-stage='open'] .case__clasp--l {
+  transform: translateY(-70%) rotate(-22deg);
+}
+
+.case[data-stage='unlock'] .case__clasp--r,
+.case[data-stage='open'] .case__clasp--r {
+  transform: translateY(-70%) rotate(22deg);
+}
+
+.case[data-stage='unlock'] .case__lid {
+  transform: rotateX(-8deg);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.case[data-stage='open'] .case__lid {
+  transform: rotateX(-74deg) translateY(-2%);
+  transition: transform 0.9s var(--ease-back);
+}
+
+.case[data-stage='open'] .case__body {
+  /* The inside of the lid is in shadow once it swings back. */
+  filter: brightness(0.42) saturate(0.7);
+  transition: filter 0.9s var(--ease-out);
+}
+
+.case[data-stage='open'] .case__handle {
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out) 0.25s;
+}
+
+.case[data-stage='open'] .case__light {
+  animation: case-light 1.6s var(--ease-out) forwards;
+}
+
+@keyframes case-light {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.1); }
+  22% { opacity: 0.9; }
+  100% { opacity: 0.14; transform: translate(-50%, -50%) scale(0.62); }
+}
+
+.case[data-stage='open'] .case__contents {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s var(--ease-out) 0.45s, transform 0.6s var(--ease-back) 0.45s;
+}
+
+/* ------------------------------------------------------- theme materials */
+
+[data-case-style='neon'] .case__body {
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--case-glow-rgb), 0.8),
+    inset 0 0 30px rgba(var(--case-glow-rgb), 0.3),
+    0 12px 28px rgba(0, 0, 0, 0.65);
+}
+
+[data-case-style='neon'] .case__number {
+  color: rgba(var(--c-accent-rgb), 0.98);
+  text-shadow: 0 0 14px rgba(var(--case-glow-rgb), 0.9), 0 0 34px rgba(var(--case-glow-rgb), 0.5);
+}
+
+[data-case-style='neon'] .case__plate {
+  background: linear-gradient(180deg, rgba(var(--case-glow-rgb), 0.16), rgba(0, 0, 0, 0.45));
+  box-shadow: inset 0 0 0 1px rgba(var(--case-glow-rgb), 0.4);
+}
+
+[data-case-style='neon'] .case__rivet,
+[data-case-style='matte'] .case__rivet {
+  opacity: 0.3;
+}
+
+[data-case-style='neon'] .case__body::after,
+[data-case-style='carbon'] .case__body::after {
+  opacity: 0.5;
+}
+
+[data-case-style='glass'] .case__body {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(var(--c-primary-rgb), 0.4),
+    0 16px 36px rgba(0, 0, 0, 0.6);
+}
+
+[data-case-style='glass'] .case__number {
+  color: rgba(var(--c-accent-rgb), 0.96);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+[data-case-style='glass'] .case__plate {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.03));
+  box-shadow: inset 0 0 0 1px rgba(var(--c-primary-rgb), 0.32);
+}
+
+[data-case-style='matte'] .case__body::before,
+[data-case-style='matte'] .case__body::after {
+  opacity: 0.2;
+}
+
+[data-case-style='matte'] .case__number {
+  color: rgba(255, 255, 255, 0.97);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+[data-case-style='matte'] .case__plate {
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.24);
+}
+
+[data-case-style='carbon'] .case__body::before {
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.32) 0 2px, transparent 2px 4px);
+  opacity: 0.85;
+}
+
+[data-case-style='carbon'] .case__number {
+  color: rgba(var(--c-accent-rgb), 0.85);
+  text-shadow: 0 0 12px rgba(var(--case-glow-rgb), 0.55);
+}

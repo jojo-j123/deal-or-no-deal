@@ -1,0 +1,211 @@
+/* ================================ Menu =================================== */
+
+.menu {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(28px, 7vh, 80px) clamp(16px, 4vw, 40px) clamp(40px, 8vh, 90px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 5vh, 56px);
+}
+
+.menu__glow {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: min(900px, 110%);
+  aspect-ratio: 2;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(var(--c-primary-rgb), 0.2), transparent 65%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.menu__head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.menu__title {
+  font-size: clamp(2.8rem, 11vw, 7rem);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+}
+
+.menu__tagline {
+  max-width: 62ch;
+  color: var(--c-muted);
+  line-height: 1.6;
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+}
+
+.menu__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.menu__section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-text);
+}
+
+.menu__section-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.menu__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: clamp(14px, 2vw, 22px);
+}
+
+.menu__empty,
+.menu__notice {
+  font-size: 0.9rem;
+  padding: 16px;
+  border-radius: var(--r-md);
+  background: rgba(var(--c-text-rgb), 0.04);
+  border: 1px dashed rgba(var(--c-text-rgb), 0.14);
+}
+
+.menu__notice {
+  border-style: solid;
+  border-color: rgba(var(--c-primary-rgb), 0.35);
+  color: var(--c-primary);
+}
+
+.menu__foot {
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------- cards */
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--c-primary-rgb), 0.45);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-card__preview {
+  position: relative;
+  height: 132px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(var(--c-primary-rgb), 0.16);
+}
+
+.game-card__preview-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-base, #14110b);
+}
+
+.game-card__preview-cases {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 24px 16px;
+}
+
+.game-card__preview-cases > * {
+  width: 62px;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+}
+
+.game-card__preview-cases > *:nth-child(1) { transform: rotate(-7deg) translateY(6px); }
+.game-card__preview-cases > *:nth-child(3) { transform: rotate(7deg) translateY(6px); }
+
+.game-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(14px, 2vw, 20px);
+  flex: 1;
+}
+
+.game-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.game-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-primary);
+}
+
+.game-card__desc {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  flex: 1;
+}
+
+.game-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.game-card__meta li {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: var(--r-pill);
+  background: rgba(var(--c-text-rgb), 0.06);
+  color: var(--c-muted);
+}
+
+.game-card__top {
+  color: var(--c-primary) !important;
+  background: rgba(var(--c-primary-rgb), 0.12) !important;
+}
+
+.game-card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.game-card__delete:hover {
+  border-color: rgba(var(--c-danger-rgb), 0.6);
+  color: var(--c-danger);
+}
