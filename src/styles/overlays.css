@@ -98,13 +98,6 @@
   width: min(340px, 62vw);
 }
 
-.reveal__image {
-  max-width: 46%;
-  max-height: 40%;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7));
-}
-
 .reveal__icon {
   font-size: clamp(2rem, 5.5vw, 3.4rem);
   line-height: 1;

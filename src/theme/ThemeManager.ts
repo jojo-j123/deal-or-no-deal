@@ -73,12 +73,6 @@ export const ThemeManager = {
     el.dataset.scanlines = String(theme.effects.scanlines);
     el.dataset.grain = String(theme.effects.grain);
     el.dataset.spotlight = String(theme.effects.spotlight);
-
-    if (theme.banker.roomImage) {
-      setVar(el, '--banker-room', `url("${theme.banker.roomImage}")`);
-    } else {
-      el.style.removeProperty('--banker-room');
-    }
   },
 
   /** Inline style object for previews inside the creator. */

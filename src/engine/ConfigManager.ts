@@ -85,7 +85,6 @@ export function createPrize(partial: Partial<Prize> = {}): Prize {
     name,
     displayName: partial.displayName ?? name,
     estimatedValue: partial.estimatedValue,
-    image: partial.image,
     icon: partial.icon,
     description: partial.description,
     rarity: partial.rarity,

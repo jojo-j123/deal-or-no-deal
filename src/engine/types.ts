@@ -16,9 +16,7 @@ export interface Prize {
   displayName: string;
   /** Optional numeric worth. Used only by the Banker's arithmetic. */
   estimatedValue?: number;
-  /** Optional image URL (data URIs are fine). */
-  image?: string;
-  /** Optional short glyph/emoji shown when no image is supplied. */
+  /** Optional short glyph/emoji shown alongside the name. */
   icon?: string;
   description?: string;
   rarity?: PrizeRarity;
@@ -133,7 +131,6 @@ export interface ThemeConfig {
     /** Emoji/glyph used when no avatar image is provided. */
     emoji: string;
     avatarUrl?: string;
-    roomImage?: string;
   };
 }
 

@@ -166,15 +166,6 @@ export function PrizesSection({ config, update }: Props) {
                     />
                   </label>
                   <label className="field">
-                    <span className="field__label">Image URL</span>
-                    <input
-                      className="input"
-                      value={prize.image ?? ''}
-                      placeholder="https://… or data:image/…"
-                      onChange={(event) => patchPrize(index, { image: event.target.value || undefined })}
-                    />
-                  </label>
-                  <label className="field prize-item__detail-wide">
                     <span className="field__label">Description</span>
                     <input
                       className="input"

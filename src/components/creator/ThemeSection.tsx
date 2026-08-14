@@ -232,7 +232,7 @@ export function ThemeSection({ config, update }: Props) {
       </FieldGrid>
 
       <h3 className="creator-subhead">Banker</h3>
-      <FieldGrid columns={3}>
+      <FieldGrid>
         <TextField
           label="Banker emoji"
           value={theme.banker.emoji}
@@ -242,11 +242,6 @@ export function ThemeSection({ config, update }: Props) {
           label="Banker avatar URL"
           value={theme.banker.avatarUrl ?? ''}
           onChange={(avatarUrl) => setTheme({ banker: { ...theme.banker, avatarUrl: avatarUrl || undefined } })}
-        />
-        <TextField
-          label="Banker room image URL"
-          value={theme.banker.roomImage ?? ''}
-          onChange={(roomImage) => setTheme({ banker: { ...theme.banker, roomImage: roomImage || undefined } })}
         />
       </FieldGrid>
     </div>

@@ -43,11 +43,7 @@ export function RevealOverlay({ reveal, valueLabel, showValue, onSkip, reducedMo
 
         <div className="reveal__case">
           <CaseArt number={reveal.caseNumber} variant="hero" stage={stage} glow={reveal.isBig}>
-            {reveal.prize.image ? (
-              <img className="reveal__image" src={reveal.prize.image} alt="" />
-            ) : reveal.prize.icon ? (
-              <span className="reveal__icon">{reveal.prize.icon}</span>
-            ) : null}
+            {reveal.prize.icon ? <span className="reveal__icon">{reveal.prize.icon}</span> : null}
             {/* The prize is revealed in the case itself, not in a caption. */}
             <span className="reveal__prize display">{reveal.prize.displayName || valueLabel}</span>
             {showValue && reveal.prize.displayName ? (
